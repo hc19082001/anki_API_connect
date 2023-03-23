@@ -1,0 +1,286 @@
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+.images {
+  width: 98%;
+  height: 300px;
+  display: flex;
+  padding: 10px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  justify-content: space-evenly;
+}
+.images .setting-img {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.images .setting-img .radio-group input[type=radio] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+.images .setting-img .radio-group label {
+  position: relative;
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
+.images .setting-img .radio-group label:before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+  border-radius: 50%;
+  border: 2px solid #999999;
+}
+.images .setting-img .radio-group input[type=radio]:checked + label:before {
+  background-color: #2196f3;
+  border-color: #2196f3;
+}
+.images .setting-img .radio-group input[type=radio]:focus + label:before {
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+}
+.images .frame {
+  width: 50%;
+  height: 100%;
+  position: relative;
+}
+.images .frame .image-anki {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.images .frame .arr {
+  position: absolute;
+  display: none;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 45px;
+  height: 45px;
+  transition: all 0.3s ease-in-out;
+}
+.images .frame .arr.arr-left {
+  left: -55px;
+}
+.images .frame .arr.arr-right {
+  right: -55px;
+}
+.images .frame .arr:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}
+.images .frame .arr:active {
+  transform: scale(0.9);
+}
+
+.fl-boxs {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 20px;
+  color: aliceblue;
+}
+.fl-boxs .fl-box {
+  padding: 20px;
+  margin-top: 10px;
+  border-radius: 10px;
+}
+.fl-boxs .fl-box .fl {
+  margin: 0;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.fl-boxs .fl-box .options {
+  display: flex;
+}
+.fl-boxs .fl-box .options .fl-options {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+}
+.fl-boxs .fl-box .options .fl-options .sub-option {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+.fl-boxs .fl-box .options .fl-options .sub-option:hover {
+  cursor: pointer;
+  background-color: #ccc;
+  color: black;
+}
+.fl-boxs .fl-box .options .fl-options .sub-option:active {
+  transform: scale(0.9);
+}
+.fl-boxs .fl-box .options .fl-options + .fl-options {
+  margin-left: 10px;
+}
+.fl-boxs .fl-box.n {
+  background-color: green;
+}
+.fl-boxs .fl-box.v {
+  background-color: rgb(192, 16, 16);
+}
+.fl-boxs .fl-box.adj {
+  background-color: rgb(11, 11, 206);
+}
+.fl-boxs .fl-box.adv {
+  background-color: rgb(209, 8, 166);
+}
+.fl-boxs .fl-box.prep {
+  background-color: rgb(192, 159, 97);
+}
+.fl-boxs .fl-box.conj {
+  background-color: purple;
+}
+.fl-boxs .fl-box.interj {
+  background-color: rgb(83, 133, 60);
+}
+.fl-boxs .fl-box.pron {
+  background-color: rgb(167, 21, 77);
+}
+.fl-boxs .fl-box.oth {
+  background-color: rgb(255, 0, 0);
+}
+
+.examples .example {
+  font-size: 20px;
+  text-align: left;
+  padding: 5px;
+}
+.examples .example:hover {
+  cursor: pointer;
+}
+.examples .example li {
+  font-size: 20px;
+}
+.examples .example span {
+  font-size: 16px;
+  font-style: italic;
+}
+
+.show {
+  display: block !important;
+}
+
+.hide {
+  display: none !important;
+}
+
+.hightlight {
+  background-color: rgb(240, 240, 90) !important;
+  font-weight: 600;
+  color: black;
+}
+
+.anki-review {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(204, 204, 204, 0.5882352941);
+}
+.anki-review .card {
+  animation: move-down 0.3s ease-in-out forwards;
+  background-color: white;
+  width: 800px;
+  height: 90%;
+  border: 1px solid #7a1f1f;
+  padding: 10px;
+  border-radius: 10px;
+  position: relative;
+}
+.anki-review .card .submit-addcard {
+  position: absolute;
+  bottom: 10px;
+  background-color: rgb(182, 255, 73);
+  padding: 10px;
+  left: 10px;
+  right: 10px;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+.anki-review .card .submit-addcard p {
+  margin: 0;
+  text-align: center;
+  font-weight: 900;
+}
+.anki-review .card .submit-addcard:hover {
+  cursor: pointer;
+}
+.anki-review .card .submit-addcard:active {
+  transform: scale(0.7);
+}
+
+.btn-show-hide-review {
+  position: fixed;
+  width: 40px;
+  height: 40px;
+  background-color: #7a1f1f;
+  right: 10px;
+  bottom: 10px;
+  z-index: 2;
+  padding: 10px;
+  border-radius: 50%;
+  transition: all 0.3s ease-in-out;
+}
+.btn-show-hide-review img {
+  width: 100%;
+  height: 100%;
+}
+.btn-show-hide-review:hover {
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+.text-active {
+  font-weight: 800;
+}
+
+.frame-hightlight {
+  animation: move-left 0.5s ease-in-out forwards;
+}
+
+.loading {
+  width: 30px;
+  height: 30px;
+}
+
+@keyframes move-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(8%);
+  }
+}
+@keyframes move-down {
+  0% {
+    transform: translateY(-20%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+@keyframes move-up {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-20%);
+    opacity: 0;
+  }
+}/*# sourceMappingURL=style.css.map */
