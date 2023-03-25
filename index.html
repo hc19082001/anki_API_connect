@@ -13,109 +13,134 @@
     <body>
         <!-- Virtual DOM for laban dictionary -->
         <div class="container" style="display: none"></div>
+        <!-- Virtual DOM for soha dictionary -->
+        <div id="soha" style="display: none"></div>
 
-        <h1 style="color: rgb(24, 117, 255)">Image</h1>
-        <div class="images">
-            <div class="frame">
-                <img class="image-anki" src="https://hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif" alt="" />
-                <img class="arr arr-left" src="https://cdn-icons-png.flaticon.com/512/2268/2268533.png" alt="" />
-                <img class="arr arr-right" src="https://cdn-icons-png.flaticon.com/512/2267/2267914.png" alt="" />
-            </div>
-            <div class="setting-img">
-                <div class="radio-img-type radio-group">
-                    <input type="radio" id="all" value="IMG_TYPE_UNDEFINED" name="radio-img-type" checked />
-                    <label for="all">All</label>
-                    <input type="radio" id="clipart" value="clipart" name="radio-img-type" />
-                    <label for="clipart">Clipart</label>
-                    <input type="radio" id="lineart" value="lineart" name="radio-img-type" />
-                    <label for="lineart">Lineart</label>
-                    <input type="radio" id="stock" value="stock" name="radio-img-type" />
-                    <label for="stock">Stock</label>
-                    <input type="radio" id="photo" value="photo" name="radio-img-type" />
-                    <label for="photo">Photo</label>
-                </div>
-                <div class="radio-img-page radio-group">
-                    <input type="radio" id="p1" value="1" name="radio-img-page" checked="true" />
-                    <label for="p1">Page 1</label>
-                    <input type="radio" id="p2" value="11" name="radio-img-page" />
-                    <label for="p2">Page 2</label>
-                    <input type="radio" id="p3" value="21" name="radio-img-page" />
-                    <label for="p3">Page 3</label>
-                </div>
+        <div class="word-search-section">
+            <div class="search-box">
+                <input class="word-search-ip" type="text" placeholder="Search word" />
+                <img class="word-search-submit" src="https://cdn-icons-png.flaticon.com/512/2839/2839041.png" alt="" />
             </div>
         </div>
 
-        <h1 style="color: rgb(24, 117, 255)">Meaning</h1>
-        <div class="fl-boxs"></div>
-
-        <h1 style="color: rgb(24, 117, 255)">Audio</h1>
-        <div class="audio"></div>
-
-        <h1 style="color: rgb(24, 117, 255); display: inline-block">Examples</h1>
-        <img
-            class="loading"
-            style="display: none"
-            src="http://superstorefinder.net/support/wp-content/uploads/2018/01/orange_circles.gif" />
-        <ol class="examples"></ol>
-
-        <!-- Review -->
-        <div class="anki-review">
-            <div class="card">
-                <h1 class="front-anki" style="color: #f81d54; display: flex; flex-direction: column; align-items: center">
-                    {{Mặt trước}}
-                </h1>
-                <span class="ipa-anki" style="font-family: 'Arial'; font-size: 25px; margin-right: 20px">{{Phiên âm}}</span>
-                <img
-                    class="audio-anki"
-                    style="width: 30px; height: 30px; display: none"
-                    src="https://cdn-icons-png.flaticon.com/512/59/59284.png"
-                    alt="" />
-
-                <hr />
-
-                <h1 class="back-anki" style="font-family: 'Arial'; font-size: 25px; color: #f81d54; text-align: center">
-                    {{Mặt sau}}
-                </h1>
-
-                <hr />
-                <div style="display: flex; justify-content: center; align-items: center">
-                    <img
-                        style="border-radius: 10px; width: 50px; height: 50px; margin-right: 10px"
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/Light_bulb_icon_red.svg/1200px-Light_bulb_icon_red.svg.png" />
-                    <h4 class="back-en-anki" style="text-align: center; color: #d33434; font-size: 25px">{{Nghĩa tiếng anh}}</h4>
-                </div>
-
-                <hr />
-
-                <img class="img-anki" src="" alt="" />
-
-                <hr />
-
-                <div
-                    style="
-                        font-family: 'Tahoma';
-                        font-size: 20px;
-                        display: flex;
-                        justify-content: flex-start;
-                        align-items: center;
-                    "
-                    class="block-exp-anki">
-                    <img
-                        style="border-radius: 10px; width: 40px; height: 40px; margin-right: 10px"
-                        src="https://i.pinimg.com/564x/28/f1/5a/28f15a54c83e65e70f2592f3014b7689.jpg" />
-                    <span style="word-break: break-word">
-                        <p class="exp-anki" style="text-align: left">{{Ví dụ}}</p>
-                    </span>
-                </div>
-                <div class="submit-addcard">
-                    <p>Ready to add new !</p>
-                </div>
-            </div>
+        <div class="word-empty" style="display: none">
+            <h1>Nothing word is found !</h1>
+            <img src="https://cdn.dribbble.com/users/1365063/screenshots/3979985/na_vrhova__plocha_1.png" alt="" />
         </div>
 
-        <!-- Show/Hide Review -->
-        <div class="btn-show-hide-review">
-            <img src="https://cdn-icons-png.flaticon.com/512/6836/6836864.png" alt="" />
+        <div class="word-details" style="display: block">
+            <h1 style="color: rgb(24, 117, 255)">Image</h1>
+            <div class="images">
+                <div class="frame">
+                    <img class="image-anki" src="https://hackernoon.com/images/0*4Gzjgh9Y7Gu8KEtZ.gif" alt="" />
+                    <img class="arr arr-left" src="https://cdn-icons-png.flaticon.com/512/2268/2268533.png" alt="" />
+                    <img class="arr arr-right" src="https://cdn-icons-png.flaticon.com/512/2267/2267914.png" alt="" />
+                </div>
+                <div class="setting-img">
+                    <div class="radio-img-type radio-group">
+                        <input type="radio" id="all" value="IMG_TYPE_UNDEFINED" name="radio-img-type" checked />
+                        <label for="all">All</label>
+                        <input type="radio" id="clipart" value="clipart" name="radio-img-type" />
+                        <label for="clipart">Clipart</label>
+                        <input type="radio" id="lineart" value="lineart" name="radio-img-type" />
+                        <label for="lineart">Lineart</label>
+                        <input type="radio" id="stock" value="stock" name="radio-img-type" />
+                        <label for="stock">Stock</label>
+                        <input type="radio" id="photo" value="photo" name="radio-img-type" />
+                        <label for="photo">Photo</label>
+                    </div>
+                    <div class="radio-img-page radio-group">
+                        <input type="radio" id="p1" value="1" name="radio-img-page" checked="true" />
+                        <label for="p1">Page 1</label>
+                        <input type="radio" id="p2" value="11" name="radio-img-page" />
+                        <label for="p2">Page 2</label>
+                        <input type="radio" id="p3" value="21" name="radio-img-page" />
+                        <label for="p3">Page 3</label>
+                    </div>
+                </div>
+            </div>
+
+            <h1 style="color: rgb(24, 117, 255)">Meaning</h1>
+            <div class="fl-boxs"></div>
+
+            <h1 style="color: rgb(24, 117, 255)">Audio</h1>
+            <div class="audio"></div>
+
+            <h1 style="color: rgb(24, 117, 255); display: inline-block">Examples</h1>
+            <img
+                class="loading"
+                style="display: none"
+                src="http://superstorefinder.net/support/wp-content/uploads/2018/01/orange_circles.gif" />
+            <ol class="examples"></ol>
+
+            <!-- Review -->
+
+            <div class="anki-review">
+                <div class="card">
+                    <div class="infor">
+                        <h1 class="front-anki" style="color: #f81d54; display: flex; flex-direction: column; align-items: center">
+                            {{Mặt trước}}
+                        </h1>
+                        <div style="display: flex; justify-content: center; margin-bottom: 20px">
+                            <span class="ipa-anki" style="font-family: 'Arial'; font-size: 25px; margin-right: 20px"
+                                >{{Phiên âm}}</span
+                            >
+                            <img
+                                class="audio-anki"
+                                style="width: 30px; height: 30px; display: none"
+                                src="https://cdn-icons-png.flaticon.com/512/2823/2823175.png"
+                                alt="" />
+                            <img
+                                class="audio-anki-mute"
+                                style="width: 30px; height: 30px; display: none"
+                                src="https://cdn-icons-png.flaticon.com/512/10054/10054993.png"
+                                alt="" />
+                        </div>
+                        <hr />
+                        <h1
+                            class="back-anki"
+                            style="font-family: 'Arial'; font-size: 25px; color: #f81d54; text-align: center; margin: 20px 0">
+                            {{ Mặt sau }}
+                        </h1>
+                        <hr />
+                        <div style="display: flex; justify-content: center; align-items: center">
+                            <img
+                                style="border-radius: 10px; width: 50px; height: 50px; margin-right: 10px"
+                                src="https://cdn-icons-png.flaticon.com/512/1738/1738157.png" />
+                            <h6 class="back-en-anki" style="text-align: center; color: #d33434; font-size: 22px; margin: 20px 0">
+                                {{Nghĩa tiếng anh}}
+                            </h6>
+                        </div>
+                        <hr />
+                        <img class="img-anki" src="" alt="" />
+                        <hr />
+                        <div
+                            style="
+                                font-family: 'Tahoma';
+                                font-size: 18px;
+                                display: flex;
+                                justify-content: flex-start;
+                                align-items: center;
+                            "
+                            class="block-exp-anki">
+                            <img
+                                style="border-radius: 10px; width: 40px; height: 40px; margin-right: 10px"
+                                src="https://i.pinimg.com/564x/28/f1/5a/28f15a54c83e65e70f2592f3014b7689.jpg" />
+                            <span style="word-break: break-word">
+                                <p class="exp-anki" style="text-align: left">{{Ví dụ}}</p>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="submit-addcard">
+                        <p>Ready to add new !</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Show/Hide Review -->
+            <div class="btn-show-hide-review">
+                <img src="https://cdn-icons-png.flaticon.com/512/6836/6836864.png" alt="" />
+            </div>
         </div>
 
         <script type="module" src="main.js"></script>
