@@ -5,7 +5,7 @@ import { mergeAttributevi, mergeAndAddnewAttribute, mergeAttributeen } from "../
 const getMeanOfWord = async (word) => {
     const [eng_mean, vi_mean] = await Promise.all([
         fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`),
-        getSohaAPI(word),
+        getMeanOfWordVNese(word),
     ]);
     let eng_obj = {};
     let arrWord = [];
@@ -63,84 +63,66 @@ const getMeanOfWord = async (word) => {
 
 export default getMeanOfWord;
 
-//! API GET WORD INFO VNESE (LABAN) -> DEPRECATED
-// const getMeanOfWordVNese = async (word) => {
-//     return fetch(`https://dict.laban.vn/find?type=1&query=${word}`)
-//         .then((response) => response.text())
-//         .then((response) => {
-//             let word = {};
-//             const laban_container = document.querySelector(".container");
-//             laban_container.innerHTML = response;
-//             laban_container.querySelectorAll("script").forEach((item) => item.remove());
-//             laban_container.querySelectorAll("link").forEach((item) => item.remove());
-//             word.ipa = laban_container.querySelector(".color-black").textContent;
-//             word.defs = [];
-//             laban_container.querySelectorAll(".slide_content:not(.hidden) .bg-grey.bold.font-large.m-top20").forEach((item) => {
-//                 let defObj = {};
-//                 let defArr = [];
-//                 switch (item.textContent) {
-//                     case "Danh từ":
-//                         defObj.type = 1;
-//                         break;
-//                     case "Động từ":
-//                         defObj.type = 2;
-//                         break;
-//                     case "Tính từ":
-//                         defObj.type = 3;
-//                         break;
-//                     case "Phó từ":
-//                         defObj.type = 4;
-//                         break;
-//                     case "Giới từ":
-//                         defObj.type = 5;
-//                         break;
-//                     case "Liên từ":
-//                         defObj.type = 6;
-//                         break;
-//                     case "Thán từ":
-//                         defObj.type = 7;
-//                         break;
-//                     case "Đại từ":
-//                         defObj.type = 8;
-//                         break;
-//                     default:
-//                         defObj.type = 9;
-//                         break;
-//                 }
-//                 let current = item.nextElementSibling;
-//                 while (!current.className) {
-//                     current = current.nextElementSibling;
-//                 }
-//                 while (current.className != "bg-grey bold font-large m-top20") {
-//                     if (current.className == "green bold margin25 m-top15") {
-//                         defArr.push(current.textContent);
-//                     }
-//                     if (current.nextElementSibling && current.nextElementSibling.className != "bg-grey bold font-large m-top20") {
-//                         current = current.nextElementSibling;
-//                     } else {
-//                         defObj.vi = defArr;
-//                         word.defs.push(defObj);
-//                         break;
-//                     }
-//                 }
-//             });
-//             const newDefsMerged = mergeAttributevi(word.defs);
-//             console.log({ ...word, defs: newDefsMerged });
-//             return { ...word, defs: newDefsMerged };
-//         });
-// };
+//! MERGE DECTIONARY FROM SOHA AND LABAN
+export const getMeanOfWordVNese = async (word) => {
+    const [soha, laban] = await Promise.all([getMeanOfWordVNeseSoha(word), getMeanOfWordVNeseLaban(word)]);
+    const merge = { ipa: laban.ipa, defs: mergeAttributevi([...laban.defs, ...soha.defs]) };
+    return merge;
+};
+
+//! API GET WORD INFO VNESE (LABAN)
+const getMeanOfWordVNeseLaban = async (word) => {
+    return fetch(`https://dict.laban.vn/find?type=1&query=${word}`)
+        .then((response) => response.text())
+        .then((response) => {
+            let word = {};
+            const laban_container = document.querySelector(".container");
+            laban_container.innerHTML = response;
+            laban_container.querySelectorAll("script").forEach((item) => item.remove());
+            laban_container.querySelectorAll("link").forEach((item) => item.remove());
+            word.ipa = laban_container.querySelector(".color-black").textContent;
+            word.defs = [];
+            laban_container.querySelectorAll(".slide_content:not(.hidden) .bg-grey.bold.font-large.m-top20").forEach((item) => {
+                let defObj = {};
+                let defArr = [];
+                defObj.type = getType(item.textContent);
+                let current = item.nextElementSibling;
+                while (!current.className) {
+                    current = current.nextElementSibling;
+                }
+                while (current.className != "bg-grey bold font-large m-top20") {
+                    if (current.className == "green bold margin25 m-top15") {
+                        defArr.push(current.textContent);
+                    }
+                    if (current.nextElementSibling && current.nextElementSibling.className != "bg-grey bold font-large m-top20") {
+                        current = current.nextElementSibling;
+                    } else {
+                        defObj.vi = defArr;
+                        word.defs.push(defObj);
+                        break;
+                    }
+                }
+            });
+            const newDefsMerged = mergeAttributevi(word.defs);
+            console.log({ ...word, defs: newDefsMerged });
+            return { ...word, defs: newDefsMerged };
+        });
+};
 
 //! API GET WORD INFO VNESE (SOHA)
-async function getSohaAPI(word) {
+async function getMeanOfWordVNeseSoha(word) {
     const result = await fetch(`http://tratu.soha.vn/dict/en_vn/${word}`);
     const data = await result.text();
     const soha_container = document.getElementById("soha");
+    console.log(soha_container);
     soha_container.innerHTML = data;
     soha_container.querySelectorAll("script").forEach((item) => item.remove());
     soha_container.querySelectorAll("link").forEach((item) => item.remove());
     const frame = soha_container.querySelector(".main-content #content-main #bodyContent");
     let ovr = { ipa: "", defs: [] };
-    ovr.ipa = frame.querySelector("#bodyContent > #content-5").textContent; //IPA
+    ovr.ipa = frame.querySelector("#bodyContent > #content-5")
+        ? frame.querySelector("#bodyContent > #content-5").textContent
+        : null; //IPA
     const formBlocks = frame.querySelectorAll("#show-alter #content-3")[0]
         ? frame.querySelectorAll("#show-alter #content-3")
         : frame.querySelectorAll("#show-alter #content-5");
@@ -193,7 +175,7 @@ async function getSohaAPI(word) {
 
 //! TOOL ASORT ATTRIBUTE
 const getType = (text) => {
-    let type = 9;
+    let type = 10;
     const textCut = text?.trim().toLocaleLowerCase();
     if (textCut.includes("danh từ") || textCut.includes("noun")) {
         type = 1;
@@ -218,6 +200,9 @@ const getType = (text) => {
     }
     if (textCut.includes("đại từ") || textCut.includes("pronoun")) {
         type = 8;
+    }
+    if (textCut.includes("định từ") || textCut.includes("determiner")) {
+        type = 9;
     }
     return type;
 };

@@ -3,7 +3,7 @@ const $$ = document.querySelectorAll.bind(document);
 
 import convertType from "./tool/convertType.js";
 import getImageLinksAPI from "./utils/getImageLinkAPI.js";
-import getMeanOfWord from "./utils/getMeanOfWord.js";
+import getMeanOfWord, { getMeanOfWordVNese } from "./utils/getMeanOfWord.js";
 import getExample from "./utils/getExample.js";
 import getAudio from "./utils/getAudio.js";
 import addCard from "./utils/addNewCard.js";
@@ -149,6 +149,7 @@ async function handleImageSection(word) {
 async function handleMeansAndIPASection(word) {
     //^ GET DATA OF MEANINGS SECTION
     const word_data = await getMeanOfWord(word).catch((err) => alert(err));
+    console.log(word_data);
     let HTMLs = "";
     //^ Handle get IPA
     ipa = word_data.ipa;
@@ -207,8 +208,10 @@ async function handleAudioSection(word) {
     });
     if (audio_dom) {
         audio_anki.style.display = "inline";
+        audio_anki_mute.style.display = "none";
         aud = audio_dom;
     } else {
+        audio_anki.style.display = "none";
         audio_anki_mute.style.display = "inline";
     }
     audio.innerHTML = `<audio controls>
@@ -243,7 +246,6 @@ async function handleExampleSection(word) {
     });
 }
 
-// createMultiChoicesFields("TOEIC VOCABULARY");
 //^ Handle event listeners
 function listeningReviewCardActions(word) {
     //^ Handle click to review card
@@ -288,9 +290,10 @@ function listeningReviewCardActions(word) {
 
 word_search_submit.addEventListener("click", async (e) => {
     const word = word_search_ip.value.trim();
-    await handleImageSection(word);
+    listeningReviewCardActions(word);
+    await getMeanOfWordVNese(word);
+    // await handleImageSection(word);
     await handleMeansAndIPASection(word);
     await handleAudioSection(word);
-    await handleExampleSection(word);
-    listeningReviewCardActions(word);
+    // await handleExampleSection(word);
 });

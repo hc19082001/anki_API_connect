@@ -213,6 +213,9 @@ body {
 .fl-boxs .fl-box.pron {
   background-color: rgb(167, 21, 77);
 }
+.fl-boxs .fl-box.deter {
+  background-color: rgb(185, 194, 64);
+}
 .fl-boxs .fl-box.oth {
   background-color: rgb(255, 0, 0);
 }

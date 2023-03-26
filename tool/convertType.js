@@ -17,6 +17,8 @@ export default function convertType(type, lang) {
                 return "Thán từ";
             case 8:
                 return "Đại từ";
+            case 9:
+                return "Hạn định từ";
             default:
                 return "Khác";
         }
@@ -38,6 +40,8 @@ export default function convertType(type, lang) {
                 return "interj";
             case 8:
                 return "pron";
+            case 9:
+                return "deter";
             default:
                 return "oth";
         }
