@@ -39,7 +39,6 @@ export default function (deckName) {
             let final_sysn = "";
             if (w_syn.sys) {
                 const arrSyns = w_syn.sys.split(",");
-                console.log(arrSyns);
                 let data = []; // DATA RANDOM
                 let arrIndexRandom = [];
                 for (let index = 0; index < arrSyns.length; index++) {
@@ -70,9 +69,6 @@ export default function (deckName) {
                 },
             };
         });
-
-        console.log(arrActions);
-
         //~ UPDATE MULTIPLE CARDS
         const z = await invoke("multi", 6, {
             actions: arrActions,

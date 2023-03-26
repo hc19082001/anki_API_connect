@@ -7,9 +7,12 @@ import getMeanOfWord, { getMeanOfWordVNese } from "./utils/getMeanOfWord.js";
 import getExample from "./utils/getExample.js";
 import getAudio from "./utils/getAudio.js";
 import addCard from "./utils/addNewCard.js";
+import { getAudioLink } from "./tool/getAudioLink.js";
 import createMultiChoicesFields from "./utils/createMultiChoicesFields.js";
+import getAlternativeAudio from "./utils/getAlternativeAudio.js";
 
 //^ DOM ELEMENTS
+const word_details = $(".word-details");
 const word_search_ip = $(".word-search-section .word-search-ip");
 const word_search_submit = $(".word-search-section .word-search-submit");
 
@@ -21,6 +24,8 @@ const right_arr = $(".frame .arr.arr-right");
 const fl_boxs = $(".fl-boxs");
 const examples = $(".examples");
 const loading_icon = $(".loading");
+const loading_bg = $(".loading-bg");
+const not_found_word = $(".word-empty");
 const audio = $(".audio");
 // Anki Template
 const anki_review = $(".anki-review");
@@ -36,7 +41,7 @@ const img_anki = $(".card .img-anki");
 const exp_anki = $(".card .exp-anki");
 const submit = $(".card .submit-addcard");
 
-const WORD_SEARCH = "fast";
+let isWrongWord = false;
 
 //^ Attr contain data
 let eng_def_choose = "";
@@ -45,7 +50,7 @@ let ipa = "";
 let aud = "";
 let img_link = "";
 let ex_data = "";
-
+not_found_word.classList.replace("hide", "show-flex");
 //^ Utilities
 const setImageByLinkAndTitle = (thumb, title, link) => {
     images_anki.src = thumb;
@@ -56,6 +61,19 @@ const setImageByLinkAndTitle = (thumb, title, link) => {
 };
 const removeFacebookDisplayLink = (arrImageData) => arrImageData.filter((item) => item.displayLink != "www.facebook.com");
 
+const clearData = () => {
+    front_anki.innerText = "";
+    ipa_anki.innerText = "";
+    back_anki.innerText = "";
+    back_en_anki.innerText = "";
+    exp_anki.innerText = "";
+    eng_def_choose = "";
+    vi_def_choose = "";
+    ipa = "";
+    aud = "";
+    img_link = "";
+    ex_data = "";
+};
 //^ Handle UI logic
 async function handleImageSection(word) {
     //^ GET IMAGE LINKS SOURCE
@@ -145,24 +163,33 @@ async function handleImageSection(word) {
         });
     });
 }
-
 async function handleMeansAndIPASection(word) {
+    loading_bg.classList.replace("hide", "show-flex");
     //^ GET DATA OF MEANINGS SECTION
-    const word_data = await getMeanOfWord(word).catch((err) => alert(err));
-    console.log(word_data);
-    let HTMLs = "";
-    //^ Handle get IPA
-    ipa = word_data.ipa;
-    ipa_anki.innerText = ipa;
-
-    word_data.defs.forEach((item) => {
-        let en_base = `<div class="fl-options en">
-                ${item.en ? item.en.map((item1) => `<div class="sub-option"><span>${item1}</span></div>`).join("") : ""}
+    const word_data = await getMeanOfWord(word).catch((err) => {
+        alert(err);
+        return;
+    });
+    if (word_data.defs.length == 0) {
+        isWrongWord = true;
+        word_details.classList.replace("block", "hide");
+        not_found_word.classList.replace("hide", "show-flex");
+    } else {
+        isWrongWord = false;
+        not_found_word.classList.replace("show-flex", "hide");
+        word_details.classList.replace("hide", "block");
+        let HTMLs = "";
+        //^ Handle get IPA
+        ipa = word_data.ipa;
+        ipa_anki.innerText = ipa;
+        word_data.defs.forEach((item) => {
+            let en_base = `<div class="fl-options en">
+        ${item.en ? item.en.map((item1) => `<div class="sub-option"><span>${item1}</span></div>`).join("") : ""}
                     </div>`;
-        let vi_base = `<div class="fl-options vi">
+            let vi_base = `<div class="fl-options vi">
                 ${item.vi ? item.vi.map((item1) => `<div class="sub-option"><span>${item1}</span></div>`).join("") : ""}
                     </div>`;
-        let base = `
+            let base = `
                 <div class="fl-box ${convertType(item.type, "en")}">
                 <h1 class="fl">${convertType(item.type, "vi")}</h1>
                 <div class="options">
@@ -170,56 +197,62 @@ async function handleMeansAndIPASection(word) {
                 ${vi_base}
                 </div>
             </div>`;
-        HTMLs += base;
-    });
-    fl_boxs.innerHTML = HTMLs;
-
-    //^ Handle click defintion
-    const en_defs = $$(".fl-options.en .sub-option");
-    const vi_defs = $$(".fl-options.vi .sub-option");
-    const frame = $$(".fl-box");
-
-    en_defs.forEach((def) => {
-        def.addEventListener("mousedown", (e) => {
-            en_defs.forEach((def) => def.classList.remove("hightlight"));
-            def.classList.add("hightlight");
-            eng_def_choose = def.innerText;
-            back_en_anki.innerText = eng_def_choose;
+            HTMLs += base;
         });
-    });
+        loading_bg.classList.replace("show-flex", "hide");
+        fl_boxs.innerHTML = HTMLs;
 
-    vi_defs.forEach((def) => {
-        def.addEventListener("mousedown", (e) => {
-            vi_defs.forEach((def) => def.classList.remove("hightlight"));
-            def.classList.add("hightlight");
-            frame.forEach((frame) => frame.classList.remove("frame-hightlight"));
-            const mostParent = def.parentNode.parentNode.parentNode;
-            mostParent.classList.add("frame-hightlight");
-            vi_def_choose = `(${mostParent.className.split(" ")[1]}) ${def.innerText}`;
-            back_anki.innerText = vi_def_choose;
+        //^ Handle click defintion
+        const en_defs = $$(".fl-options.en .sub-option");
+        const vi_defs = $$(".fl-options.vi .sub-option");
+        const frame = $$(".fl-box");
+
+        en_defs.forEach((def) => {
+            def.addEventListener("mousedown", (e) => {
+                en_defs.forEach((def) => def.classList.remove("hightlight"));
+                def.classList.add("hightlight");
+                eng_def_choose = def.innerText;
+                back_en_anki.innerText = eng_def_choose;
+            });
         });
-    });
+
+        vi_defs.forEach((def) => {
+            def.addEventListener("mousedown", (e) => {
+                vi_defs.forEach((def) => def.classList.remove("hightlight"));
+                def.classList.add("hightlight");
+                frame.forEach((frame) => frame.classList.remove("frame-hightlight"));
+                const mostParent = def.parentNode.parentNode.parentNode;
+                mostParent.classList.add("frame-hightlight");
+                vi_def_choose = `(${mostParent.className.split(" ")[1]}) ${def.innerText}`;
+                back_anki.innerText = vi_def_choose;
+            });
+        });
+    }
+    loading_bg.classList.replace("show-flex", "hide");
 }
-
 async function handleAudioSection(word) {
+    console.log(word);
     //^ Render audio
-    const audio_dom = await getAudio(word).catch((err) => {
+    const audio_dom1 = await getAudio(word).catch((err) => {
         console.log(err);
     });
-    if (audio_dom) {
+    const audio_dom2 = await getAlternativeAudio(word).catch((err) => {
+        console.log(err);
+    });
+    if (audio_dom1 || audio_dom2) {
         audio_anki.style.display = "inline";
         audio_anki_mute.style.display = "none";
-        aud = audio_dom;
+        aud = audio_dom1 ? audio_dom1 : audio_dom2;
+        audio.innerHTML = `<audio controls>
+                <source src="${audio_dom1 ? audio_dom1 : audio_dom2}" type="audio/mp3" />
+                Your browser does not support the audio element.
+                </audio>`;
     } else {
         audio_anki.style.display = "none";
         audio_anki_mute.style.display = "inline";
+        audio.innerHTML = `<h1>We can't find audio source</h1>`;
     }
-    audio.innerHTML = `<audio controls>
-                <source src="${audio_dom}" type="audio/mp3" />
-                Your browser does not support the audio element.
-                </audio>`;
 }
-
 async function handleExampleSection(word) {
     //^ Render examples
     loading_icon.style.display = "inline-block";
@@ -289,11 +322,13 @@ function listeningReviewCardActions(word) {
 }
 
 word_search_submit.addEventListener("click", async (e) => {
+    clearData();
     const word = word_search_ip.value.trim();
-    listeningReviewCardActions(word);
-    await getMeanOfWordVNese(word);
-    // await handleImageSection(word);
     await handleMeansAndIPASection(word);
-    await handleAudioSection(word);
-    // await handleExampleSection(word);
+    if (!isWrongWord) {
+        listeningReviewCardActions(word);
+        // await handleImageSection(word);
+        await handleAudioSection(word);
+        // await handleExampleSection(word);
+    }
 });

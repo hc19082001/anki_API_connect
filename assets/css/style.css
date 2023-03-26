@@ -240,6 +240,10 @@ body {
   display: block !important;
 }
 
+.show-flex {
+  display: flex !important;
+}
+
 .hide {
   display: none !important;
 }
@@ -319,6 +323,24 @@ body {
 .btn-show-hide-review:hover {
   cursor: pointer;
   transform: scale(1.2);
+}
+
+.loading-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(85, 85, 85, 0.4745098039);
+}
+.loading-bg img {
+  width: 400px;
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 .text-active {

@@ -1,5 +1,4 @@
 import { MERRIAM_WEBSTER_API_KEY } from "../assets/api_key.js";
-MERRIAM_WEBSTER_API_KEY;
 
 const checkbig = /^(big)/;
 const checkgg = /^(gg)/;

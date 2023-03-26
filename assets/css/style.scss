@@ -251,6 +251,10 @@ body {
     display: block !important;
 }
 
+.show-flex {
+    display: flex !important;
+}
+
 .hide {
     display: none !important;
 }
@@ -340,6 +344,23 @@ body {
     &:hover {
         cursor: pointer;
         transform: scale(1.2);
+    }
+}
+
+.loading-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #55555579;
+    img {
+        width: 400px;
+        object-fit: cover;
     }
 }
 
