@@ -10,22 +10,29 @@ import addCard from "./utils/addNewCard.js";
 import { getAudioLink } from "./tool/getAudioLink.js";
 import createMultiChoicesFields from "./utils/createMultiChoicesFields.js";
 import getAlternativeAudio from "./utils/getAlternativeAudio.js";
+import getAllDecksName from "./utils/getAllDecksName.js";
 
 //^ DOM ELEMENTS
+const currentDeck = $(".decks .current-deck");
+const deckPanel = $(".decks .deck-panel");
+const syncChoices = $(".word-search-section .sync");
+
 const word_details = $(".word-details");
 const word_search_ip = $(".word-search-section .word-search-ip");
-const word_search_submit = $(".word-search-section .word-search-submit");
 
 const iptype_image = $$('.images .setting-img input[name="radio-img-type"]');
 const ippage_image = $$('.images .setting-img input[name="radio-img-page"]');
 const images_anki = $(".frame .image-anki");
 const left_arr = $(".frame .arr.arr-left");
 const right_arr = $(".frame .arr.arr-right");
+
 const fl_boxs = $(".fl-boxs");
 const examples = $(".examples");
 const loading_icon = $(".loading");
 const loading_bg = $(".loading-bg");
+
 const not_found_word = $(".word-empty");
+
 const audio = $(".audio");
 // Anki Template
 const anki_review = $(".anki-review");
@@ -41,7 +48,10 @@ const img_anki = $(".card .img-anki");
 const exp_anki = $(".card .exp-anki");
 const submit = $(".card .submit-addcard");
 
+let wordSearch = "";
+
 let isWrongWord = false;
+let currentDeckName = "";
 
 //^ Attr contain data
 let eng_def_choose = "";
@@ -74,6 +84,137 @@ const clearData = () => {
     img_link = "";
     ex_data = "";
 };
+
+//* ASSORT
+//^ Connect to Anki to get Decks information:
+const decks_anki = await getAllDecksName().catch((err) => {
+    Swal.fire({
+        title: "Lỗi kết nối!",
+        text: "Chưa mở ứng dụng Anki",
+        icon: "error",
+        confirmButtonText: "OK",
+    });
+});
+decks_anki.forEach((deck) => {
+    const div = document.createElement("div");
+    div.setAttribute("class", "deck");
+    div.innerText = deck;
+    deckPanel.appendChild(div);
+});
+syncChoices.addEventListener("click", async (e) => {
+    if (currentDeckName === "") {
+        Swal.fire({
+            title: "Lỗi",
+            text: "Chưa chọn deck",
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+        return;
+    }
+    const result = await createMultiChoicesFields(currentDeckName, 2).catch((err) => {
+        Swal.fire({
+            title: "Lỗi",
+            text: err,
+            icon: "error",
+            confirmButtonText: "OK",
+        });
+    });
+    Swal.fire({
+        title: "Thành công",
+        text: "Đồng bộ các trường có lựa chọn thành công",
+        icon: "success",
+        confirmButtonText: "OK",
+    });
+});
+const optionalDeck = $$(".decks .deck-panel .deck");
+optionalDeck.forEach((deck) => {
+    deck.addEventListener("click", (e) => {
+        currentDeckName = deck.textContent;
+        currentDeck.textContent = deck.textContent;
+    });
+});
+//^ Handle input
+word_search_ip.addEventListener("keypress", async (e) => {
+    if (e.key === "Enter") {
+        clearData();
+        const word = word_search_ip.value.trim();
+        wordSearch = word_search_ip.value.trim();
+        await handleMeansAndIPASection(word);
+        if (!isWrongWord) {
+            // await handleImageSection(word);
+            await handleAudioSection(word);
+            // await handleExampleSection(word);
+        }
+    }
+});
+//^ Handle click to review card
+btn_review.addEventListener("click", () => {
+    if (!isWrongWord) {
+        front_anki.innerText = wordSearch;
+        anki_review.style.display = "flex";
+        console.log("btn_review.addEventListener");
+    }
+});
+//^ submit add card handle
+submit.addEventListener("click", async (e) => {
+    if (!isWrongWord) {
+        console.log("submit.addEventListener");
+        if (currentDeckName === "") {
+            Swal.fire({
+                title: "Lỗi",
+                text: "Chưa chọn deck",
+                icon: "error",
+                confirmButtonText: "OK",
+            });
+            return;
+        }
+        const cardInfoEx = {
+            front: wordSearch /* Y */,
+            back: vi_def_choose,
+            phonetic_symbols: ipa /* Y */,
+            family_words: "",
+            synonyms: "",
+            example: ex_data,
+            english_meaning: eng_def_choose /* Y */,
+            image: img_link /* Y */,
+            audio: aud /* Y */,
+        };
+        loading_bg.classList.replace("hide", "show-flex");
+        await addCard(currentDeckName, "Flash Card", cardInfoEx).catch((err) => {
+            console.log(err);
+        });
+        loading_bg.classList.replace("show-flex", "hide");
+        Swal.fire({
+            title: "Thành công",
+            text: "Đã thêm một từ mới vào deck của bạn",
+            icon: "success",
+            confirmButtonText: "OK",
+        });
+        anki_card.style.animation = "move-up 0.3s ease-in-out";
+        setTimeout(() => {
+            anki_review.style.display = "none";
+            anki_card.style.animation = "move-down 0.3s ease-in-out";
+        }, 200);
+    }
+});
+//^ Handle close review card when click outside
+anki_review.addEventListener("click", (e) => {
+    if (!isWrongWord) {
+        console.log("anki_review.addEventListener");
+        if (e.target.contains(anki_review)) {
+            anki_card.style.animation = "move-up 0.3s ease-in-out";
+            setTimeout(() => {
+                anki_review.style.display = "none";
+                anki_card.style.animation = "move-down 0.3s ease-in-out";
+            }, 200);
+        }
+    }
+});
+word_search_ip.addEventListener("click", async (e) => {
+    e.target.select();
+});
+//* ASSORT
+
 //^ Handle UI logic
 async function handleImageSection(word) {
     //^ GET IMAGE LINKS SOURCE
@@ -167,7 +308,7 @@ async function handleMeansAndIPASection(word) {
     loading_bg.classList.replace("hide", "show-flex");
     //^ GET DATA OF MEANINGS SECTION
     const word_data = await getMeanOfWord(word).catch((err) => {
-        alert(err);
+        console.log(err);
         return;
     });
     if (word_data.defs.length == 0) {
@@ -231,7 +372,6 @@ async function handleMeansAndIPASection(word) {
     loading_bg.classList.replace("show-flex", "hide");
 }
 async function handleAudioSection(word) {
-    console.log(word);
     //^ Render audio
     const audio_dom1 = await getAudio(word).catch((err) => {
         console.log(err);
@@ -278,57 +418,3 @@ async function handleExampleSection(word) {
         });
     });
 }
-
-//^ Handle event listeners
-function listeningReviewCardActions(word) {
-    //^ Handle click to review card
-    btn_review.addEventListener("click", () => {
-        front_anki.innerText = word;
-        anki_review.style.display = "flex";
-    });
-    //^ Handle close review card when click outside
-    anki_review.addEventListener("click", (e) => {
-        if (e.target.contains(anki_review)) {
-            anki_card.style.animation = "move-up 0.3s ease-in-out";
-            setTimeout(() => {
-                anki_review.style.display = "none";
-                anki_card.style.animation = "move-down 0.3s ease-in-out";
-            }, 200);
-        }
-    });
-    //^ submit add card handle
-    submit.addEventListener("click", async (e) => {
-        const cardInfoEx = {
-            front: word /* Y */,
-            back: vi_def_choose,
-            phonetic_symbols: ipa /* Y */,
-            family_words: "",
-            synonyms: "",
-            example: ex_data,
-            english_meaning: eng_def_choose /* Y */,
-            image: img_link /* Y */,
-            audio: aud /* Y */,
-        };
-        console.log(cardInfoEx);
-        await addCard("test1", "Flash Card", cardInfoEx).catch((err) => {
-            console.log(err);
-        });
-        anki_card.style.animation = "move-up 0.3s ease-in-out";
-        setTimeout(() => {
-            anki_review.style.display = "none";
-            anki_card.style.animation = "move-down 0.3s ease-in-out";
-        }, 200);
-    });
-}
-
-word_search_submit.addEventListener("click", async (e) => {
-    clearData();
-    const word = word_search_ip.value.trim();
-    await handleMeansAndIPASection(word);
-    if (!isWrongWord) {
-        listeningReviewCardActions(word);
-        // await handleImageSection(word);
-        await handleAudioSection(word);
-        // await handleExampleSection(word);
-    }
-});

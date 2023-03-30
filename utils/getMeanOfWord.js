@@ -16,35 +16,6 @@ const getMeanOfWord = async (word) => {
                 let engWordObj = {};
                 let tmpArr = [];
                 engWordObj.type = getType(item.partOfSpeech);
-                // switch (item.partOfSpeech) {
-                //     case "noun":
-                //         engWordObj.type = 1;
-                //         break;
-                //     case "verb":
-                //         engWordObj.type = 2;
-                //         break;
-                //     case "adjective":
-                //         engWordObj.type = 3;
-                //         break;
-                //     case "adverb":
-                //         engWordObj.type = 4;
-                //         break;
-                //     case "preposition":
-                //         engWordObj.type = 5;
-                //         break;
-                //     case "conjunction":
-                //         engWordObj.type = 6;
-                //         break;
-                //     case "interjection":
-                //         engWordObj.type = 7;
-                //         break;
-                //     case "pronoun":
-                //         engWordObj.type = 8;
-                //         break;
-                //     default:
-                //         engWordObj.type = 9;
-                //         break;
-                // }
                 item.definitions.forEach((def) => {
                     tmpArr.push(def.definition);
                 });
@@ -57,7 +28,6 @@ const getMeanOfWord = async (word) => {
         eng_obj = { defs: [] };
     }
     const merge_en_vn = { ipa: vi_mean.ipa, defs: mergeAndAddnewAttribute(eng_obj.defs, vi_mean.defs) };
-    console.log(merge_en_vn);
     return merge_en_vn;
 };
 
@@ -80,7 +50,9 @@ const getMeanOfWordVNeseLaban = async (word) => {
             laban_container.innerHTML = response;
             laban_container.querySelectorAll("script").forEach((item) => item.remove());
             laban_container.querySelectorAll("link").forEach((item) => item.remove());
-            word.ipa = laban_container.querySelector(".color-black").textContent;
+            word.ipa = laban_container.querySelector(".color-black")
+                ? laban_container.querySelector(".color-black").textContent
+                : "";
             word.defs = [];
             laban_container.querySelectorAll(".slide_content:not(.hidden) .bg-grey.bold.font-large.m-top20").forEach((item) => {
                 let defObj = {};
@@ -104,7 +76,6 @@ const getMeanOfWordVNeseLaban = async (word) => {
                 }
             });
             const newDefsMerged = mergeAttributevi(word.defs);
-            console.log({ ...word, defs: newDefsMerged });
             return { ...word, defs: newDefsMerged };
         });
 };
@@ -114,7 +85,6 @@ async function getMeanOfWordVNeseSoha(word) {
     const result = await fetch(`http://tratu.soha.vn/dict/en_vn/${word}`);
     const data = await result.text();
     const soha_container = document.getElementById("soha");
-    console.log(soha_container);
     soha_container.innerHTML = data;
     soha_container.querySelectorAll("script").forEach((item) => item.remove());
     soha_container.querySelectorAll("link").forEach((item) => item.remove());
@@ -126,7 +96,6 @@ async function getMeanOfWordVNeseSoha(word) {
     const formBlocks = frame.querySelectorAll("#show-alter #content-3")[0]
         ? frame.querySelectorAll("#show-alter #content-3")
         : frame.querySelectorAll("#show-alter #content-5");
-    console.log(formBlocks);
     const forms = [];
     formBlocks.forEach((item) => {
         const form = item.querySelector("h3") ? item.querySelector("h3").textContent : item.querySelector("h5").textContent;
@@ -169,7 +138,6 @@ async function getMeanOfWordVNeseSoha(word) {
     });
     ovr.defs = forms;
     const newDefsMerged = mergeAttributevi(ovr.defs);
-    console.log({ ...word, defs: newDefsMerged });
     return { ...word, defs: newDefsMerged };
 }
 

@@ -2,6 +2,9 @@ import { GOOGLE_CUSTOM_SEARCH_API, GOOGLE_CUSTOM_SEARCH_ENGINE_ID } from "../ass
 
 //! API GET IMAGE LINK
 const getImageLinksAPI = async (word, start = 1, imgType = "IMG_TYPE_UNDEFINED") => {
+    console.log(
+        `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_CUSTOM_SEARCH_API}&cx=${GOOGLE_CUSTOM_SEARCH_ENGINE_ID}&searchType=image&safe=active&num=10&start=${start}&imgType=${imgType}&q=${word}`,
+    );
     const result = await fetch(
         `https://www.googleapis.com/customsearch/v1?key=${GOOGLE_CUSTOM_SEARCH_API}&cx=${GOOGLE_CUSTOM_SEARCH_ENGINE_ID}&searchType=image&safe=active&num=10&start=${start}&imgType=${imgType}&q=${word}`,
         {

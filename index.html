@@ -11,6 +11,7 @@
         <title>Document</title>
     </head>
     <body>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <!-- Virtual DOM for laban dictionary -->
         <div class="container" style="display: none"></div>
         <!-- Virtual DOM for soha dictionary -->
@@ -19,8 +20,12 @@
         <div class="word-search-section">
             <div class="search-box">
                 <input class="word-search-ip" type="text" placeholder="Search word" />
-                <img class="word-search-submit" src="https://cdn-icons-png.flaticon.com/512/2839/2839041.png" alt="" />
             </div>
+            <div class="decks">
+                <div class="current-deck"><b>(Choose the current deck)</b></div>
+                <div class="deck-panel"></div>
+            </div>
+            <img class="sync" src="https://cdn-icons-png.flaticon.com/512/6985/6985175.png" alt="" />
         </div>
 
         <div class="word-empty hide">
@@ -74,7 +79,6 @@
             <ol class="examples"></ol>
 
             <!-- Review -->
-
             <div class="anki-review">
                 <div class="card">
                     <div class="infor">

@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const { Configuration, OpenAIApi } = require("openai");
-const CHATGPT_API_KEY = "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";
+const CHATGPT_API_KEY = "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";
 
 const configuration = new Configuration({
     apiKey: CHATGPT_API_KEY,

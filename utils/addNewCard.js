@@ -14,7 +14,7 @@ export const invoke = async (action, version = 6, params = {}) => {
 
 const addCard = async (deckName, modelName, cardInfo) => {
     const { front, back, phonetic_symbols, family_words, synonyms, example, english_meaning, image, audio } = cardInfo;
-    await invoke("addNote", 6, {
+    const data = await invoke("addNote", 6, {
         note: {
             deckName,
             modelName,
@@ -46,6 +46,7 @@ const addCard = async (deckName, modelName, cardInfo) => {
             ],
         },
     }).catch((err) => console.log(err));
+    return data.result;
 };
 
 export default addCard;

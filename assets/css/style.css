@@ -18,6 +18,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
 }
 .word-search-section .search-box {
   display: flex;
@@ -56,6 +57,55 @@ body {
 }
 .word-search-section .search-box img:hover {
   cursor: pointer;
+}
+.word-search-section .decks {
+  background-color: white;
+  padding: 5px;
+  float: right;
+  display: flex;
+  position: absolute;
+  right: 10%;
+  width: 200px;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 14px;
+}
+.word-search-section .decks:hover .deck-panel {
+  display: block;
+  opacity: 1;
+  animation: slide 0.3s ease-in-out;
+}
+.word-search-section .decks .deck-panel {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(100%);
+  background-color: #8acbff;
+  border-radius: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+}
+.word-search-section .decks .deck-panel .deck {
+  padding: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.word-search-section .decks .deck-panel .deck:hover {
+  cursor: pointer;
+  background-color: #6cbdff;
+}
+.word-search-section .sync {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  right: 5%;
+  background-color: white;
+  border-radius: 10px;
+  padding: 5px;
 }
 
 .word-empty {
@@ -348,6 +398,7 @@ body {
 }
 
 .frame-hightlight {
+  transition: all 0.3s ease-in-out;
   animation: move-left 0.5s ease-in-out forwards;
 }
 
@@ -361,7 +412,7 @@ body {
     transform: translateX(0);
   }
   100% {
-    transform: translateX(8%);
+    transform: translateX(5%);
   }
 }
 @keyframes move-down {

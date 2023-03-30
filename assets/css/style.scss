@@ -18,6 +18,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 
     .search-box {
         display: flex;
@@ -55,6 +56,60 @@ body {
                 cursor: pointer;
             }
         }
+    }
+
+    .decks {
+        background-color: white;
+        padding: 5px;
+        float: right;
+        display: flex;
+        position: absolute;
+        right: 10%;
+        width: 200px;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: 14px;
+
+        &:hover .deck-panel {
+            display: block;
+            opacity: 1;
+            animation: slide 0.3s ease-in-out;
+        }
+
+        .deck-panel {
+            display: none;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            transform: translateY(100%);
+            background-color: #8acbff;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+
+            .deck {
+                padding: 12px;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                &:hover {
+                    cursor: pointer;
+                    background-color: #6cbdff;
+                }
+            }
+        }
+    }
+
+    .sync {
+        width: 30px;
+        height: 30px;
+        position: absolute;
+        right: 5%;
+        background-color: white;
+        border-radius: 10px;
+        padding: 5px;
     }
 }
 
@@ -369,9 +424,11 @@ body {
 }
 
 .frame-hightlight {
-    // border: 10px solid rgb(255, 255, 0) !important;
+    transition: all 0.3s ease-in-out;
+    // border: 5px dashed rgb(255, 255, 0) !important;
     animation: move-left 0.5s ease-in-out forwards;
 }
+
 .loading {
     width: 30px;
     height: 30px;
@@ -382,7 +439,7 @@ body {
         transform: translateX(0);
     }
     100% {
-        transform: translateX(8%);
+        transform: translateX(5%);
     }
 }
 
