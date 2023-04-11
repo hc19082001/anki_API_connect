@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const { Configuration, OpenAIApi } = require("openai");
-const CHATGPT_API_KEY = "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";
+const CHATGPT_API_KEY = "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";
 
 const configuration = new Configuration({
     apiKey: CHATGPT_API_KEY,
@@ -36,4 +36,4 @@ app.get("/:word", async (req, res) => {
     res.json(examples);
 });
 
-app.listen(3000, () => console.log(`Server is running on port is: http://localhost:${3000}/`));
+app.listen(3000, () => console.log(`>>>> Server is running on port is: http://localhost:${3000}/ <<<`));

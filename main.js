@@ -35,6 +35,7 @@ const not_found_word = $(".word-empty");
 
 const audio = $(".audio");
 // Anki Template
+let image_custom_link;
 const anki_review = $(".anki-review");
 const anki_card = $(".anki-review .card");
 const btn_review = $(".btn-show-hide-review");
@@ -63,6 +64,7 @@ let ex_data = "";
 not_found_word.classList.replace("hide", "show-flex");
 //^ Utilities
 const setImageByLinkAndTitle = (thumb, title, link) => {
+    image_custom_link.value = link;
     images_anki.src = thumb;
     images_anki.alt = title;
     img_anki.src = thumb;
@@ -141,9 +143,15 @@ word_search_ip.addEventListener("keypress", async (e) => {
         wordSearch = word_search_ip.value.trim();
         await handleMeansAndIPASection(word);
         if (!isWrongWord) {
-            // await handleImageSection(word);
+            await handleImageSection(word);
+            //^ GET IMAGE LINKS SOURCE
+            // ^Handle custom image link field
+            image_custom_link.addEventListener("change", () => {
+                setImageByLinkAndTitle(image_custom_link.value, image_custom_link.value, image_custom_link.value);
+                img_link = image_custom_link.value;
+            });
             await handleAudioSection(word);
-            // await handleExampleSection(word);
+            await handleExampleSection(word);
         }
     }
 });
@@ -217,7 +225,7 @@ word_search_ip.addEventListener("click", async (e) => {
 
 //^ Handle UI logic
 async function handleImageSection(word) {
-    //^ GET IMAGE LINKS SOURCE
+    image_custom_link = $(".setting-img .image-custom-link");
     const fetchImagesData = await getImageLinksAPI(word).catch((err) => alert(err));
     let arrImagesData = removeFacebookDisplayLink(fetchImagesData);
     //^ SET FIRST IMAGE TO FRAME AND ENABLE LEFT AND RIGHT ARROW
@@ -229,7 +237,6 @@ async function handleImageSection(word) {
     );
     left_arr.classList.add("show");
     right_arr.classList.add("show");
-
     right_arr.addEventListener("mousedown", () => {
         if (imageIndex < arrImagesData.length - 1) {
             imageIndex++;
